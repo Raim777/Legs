@@ -169,11 +169,6 @@ namespace FischlWorks
         [SerializeField]
         private float worldHeightOffset = 0;
 
-        [SerializeField] 
-        private Transform body;
-        [SerializeField] 
-        private bool bodyDamping = false;
-
         private RaycastHit leftFootRayHitInfo = new RaycastHit();
         private RaycastHit rightFootRayHitInfo = new RaycastHit();
 
@@ -220,6 +215,8 @@ namespace FischlWorks
         private Vector3 rightFootRotationLerpVelocity = new Vector3();
 
         private GUIStyle helperTextStyle = null;
+
+        private float bodyOffset = 0.0f, bodyOffsetVelocity = 0.0f;
 
 
 
@@ -629,15 +626,23 @@ namespace FischlWorks
             }
 
             float minFootHeight = Mathf.Min(
-                    playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y,
-                    playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y);
+                    leftFootRayHitHeight,
+                    rightFootRayHitHeight);
+            
+            minFootHeight -= transform.localPosition.y;
 
+            if (minFootHeight < -floorRange)
+            {
+                minFootHeight = 0.0f;
+            }
+            
+            bodyOffset = Mathf.SmoothDamp(bodyOffset, LimitValueByRange(minFootHeight, 0), ref bodyOffsetVelocity, smoothTime);
+            
             /* This part moves the body 'downwards' by the root gameobject's height */
 
             playerAnimator.bodyPosition = new Vector3(
             playerAnimator.bodyPosition.x,
-            playerAnimator.bodyPosition.y +
-            LimitValueByRange(minFootHeight - transform.position.y, 0),
+            playerAnimator.bodyPosition.y + bodyOffset,
             playerAnimator.bodyPosition.z);
         }
 
