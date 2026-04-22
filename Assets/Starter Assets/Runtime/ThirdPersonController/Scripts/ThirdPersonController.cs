@@ -121,18 +121,12 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        private bool _isCurrentDeviceMouse;
 
-        private bool IsCurrentDeviceMouse
-        {
-            get
-            {
-#if ENABLE_INPUT_SYSTEM
-                return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
-            }
-        }
+        // cached animator params to avoid redundant native SetBool every frame
+        private bool _animGrounded;
+        private bool _animJump;
+        private bool _animFreeFall;
 
         private void Start()
         {
@@ -147,16 +141,40 @@ namespace StarterAssets
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
+            _isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
+            _playerInput.onControlsChanged += OnControlsChanged;
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
 
+            if (_hasAnimator)
+            {
+                _animGrounded = _animator.GetBool(_animIDGrounded);
+                _animJump = _animator.GetBool(_animIDJump);
+                _animFreeFall = _animator.GetBool(_animIDFreeFall);
+            }
+
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
+
+#if ENABLE_INPUT_SYSTEM
+        private void OnDestroy()
+        {
+            if (_playerInput != null)
+            {
+                _playerInput.onControlsChanged -= OnControlsChanged;
+            }
+        }
+
+        private void OnControlsChanged(PlayerInput pi)
+        {
+            _isCurrentDeviceMouse = pi.currentControlScheme == "KeyboardMouse";
+        }
+#endif
 
         private void Update()
         {
@@ -190,7 +208,7 @@ namespace StarterAssets
             // update animator if using character
             if (_hasAnimator)
             {
-                _animator.SetBool(_animIDGrounded, Grounded);
+                SetAnimBool(_animIDGrounded, ref _animGrounded, Grounded);
             }
         }
 
@@ -200,7 +218,7 @@ namespace StarterAssets
             if (_input.Look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                float deltaTimeMultiplier = _isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 //float deltaTimeMultiplier = Time.deltaTime;
 
                 _cinemachineTargetYaw += _input.Look.x * deltaTimeMultiplier;
@@ -291,8 +309,8 @@ namespace StarterAssets
                 // update animator if using character
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
+                    SetAnimBool(_animIDJump, ref _animJump, false);
+                    SetAnimBool(_animIDFreeFall, ref _animFreeFall, false);
                 }
 
                 // stop our velocity dropping infinitely when grounded
@@ -310,7 +328,7 @@ namespace StarterAssets
                     // update animator if using character
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
+                        SetAnimBool(_animIDJump, ref _animJump, true);
                     }
                 }
 
@@ -335,7 +353,7 @@ namespace StarterAssets
                     // update animator if using character
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDFreeFall, true);
+                        SetAnimBool(_animIDFreeFall, ref _animFreeFall, true);
                     }
                 }
 
@@ -348,6 +366,13 @@ namespace StarterAssets
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
+        }
+
+        private void SetAnimBool(int id, ref bool current, bool value)
+        {
+            if (current == value) return;
+            current = value;
+            _animator.SetBool(id, value);
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
