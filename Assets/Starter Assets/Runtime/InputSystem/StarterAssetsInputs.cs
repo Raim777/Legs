@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace StarterAssets
 {
-	public class StarterAssetsInputs : MonoBehaviour
+	public class StarterAssetsInputs : CharacterInputProvider
 	{
 		[Header("Character Input Values")]
 		[SerializeField] private Vector2 move;
@@ -19,14 +19,14 @@ namespace StarterAssets
 		[Header("Mouse Cursor Settings")]
 		[SerializeField] private bool cursorLocked = true;
 		[SerializeField] private bool cursorInputForLook = true;
-		
 
-		public Vector2 Move => move;
-		public Vector2 Look => look;
-		public bool Jump => jump;
-		public bool Sprint => sprint;
-		
-		public bool AnalogMovement => analogMovement;
+
+		public override Vector2 Move => move;
+		public override Vector2 Look => look;
+		public override bool Jump => jump;
+		public override bool Sprint => sprint;
+
+		public override bool AnalogMovement => analogMovement;
 
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -114,7 +114,7 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
-		public void ConsumeJump()
+		public override void ConsumeJump()
 		{
 			jump = false;
 		}

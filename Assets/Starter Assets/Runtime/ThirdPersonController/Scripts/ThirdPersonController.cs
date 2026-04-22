@@ -15,9 +15,12 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        [Header("Input")]
+        [SerializeField] private CharacterInputProvider _input;
+
         [Header("Camera")]
         [SerializeField] private Camera mainCamera;
-        
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         [SerializeField] private float MoveSpeed = 2.0f;
@@ -110,7 +113,6 @@ namespace StarterAssets
 #endif
         private Animator _animator;
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
 
         private Transform _transform;
         private Transform _mainCameraTransform;
@@ -138,7 +140,6 @@ namespace StarterAssets
 
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
             _isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
