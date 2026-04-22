@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -77,6 +78,9 @@ namespace StarterAssets
 
         [Tooltip("For locking the camera position on all axis")]
         [SerializeField] private bool LockCameraPosition = false;
+        
+        [Header("Audio")]
+        [SerializeField] private AudioSource[] audioPool;
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -112,7 +116,6 @@ namespace StarterAssets
         private Transform _mainCameraTransform;
         private Transform _cinemachineTargetTransform;
 
-        [SerializeField] private AudioSource[] _audioPool;
         private int _audioPoolIndex;
 
         private const float _threshold = 0.01f;
@@ -194,14 +197,14 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (_input.Look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 //float deltaTimeMultiplier = Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _input.Look.x * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _input.Look.y * deltaTimeMultiplier;
             }
 
             // clamp our rotations so our values are limited 360 degrees
@@ -216,20 +219,20 @@ namespace StarterAssets
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = _input.Sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+            if (_input.Move == Vector2.zero) targetSpeed = 0.0f;
 
             // a reference to the players current horizontal velocity
             Vector3 vel = _controller.velocity;
             float currentHorizontalSpeed = Mathf.Sqrt(vel.x * vel.x + vel.z * vel.z);
 
             float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+            float inputMagnitude = _input.AnalogMovement ? _input.Move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -250,10 +253,10 @@ namespace StarterAssets
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (_input.move != Vector2.zero)
+            if (_input.Move != Vector2.zero)
             {
                 // normalise input direction
-                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                Vector3 inputDirection = new Vector3(_input.Move.x, 0.0f, _input.Move.y).normalized;
 
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCameraTransform.eulerAngles.y;
@@ -272,11 +275,10 @@ namespace StarterAssets
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
             // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-            }
+            if (!_hasAnimator) return;
+            
+            _animator.SetFloat(_animIDSpeed, _animationBlend);
+            _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
         }
 
         private void JumpAndGravity()
@@ -300,7 +302,7 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                if (_input.Jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -338,7 +340,7 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                _input.ConsumeJump();
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -360,8 +362,7 @@ namespace StarterAssets
             Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
             Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-            if (Grounded) Gizmos.color = transparentGreen;
-            else Gizmos.color = transparentRed;
+            Gizmos.color = Grounded ? transparentGreen : transparentRed;
 
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
@@ -372,8 +373,8 @@ namespace StarterAssets
         private void PlayPooledClip(AudioClip clip, float volume)
         {
             if (clip == null) return;
-            AudioSource src = _audioPool[_audioPoolIndex];
-            _audioPoolIndex = (_audioPoolIndex + 1) % _audioPool.Length;
+            AudioSource src = audioPool[_audioPoolIndex];
+            _audioPoolIndex = (_audioPoolIndex + 1) % audioPool.Length;
             src.clip = clip;
             src.volume = volume;
             src.Play();
@@ -381,14 +382,11 @@ namespace StarterAssets
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                if (FootstepAudioClips.Length > 0)
-                {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    PlayPooledClip(FootstepAudioClips[index], FootstepAudioVolume);
-                }
-            }
+            if (!(animationEvent.animatorClipInfo.weight > 0.5f)) return;
+            if (FootstepAudioClips.Length <= 0) return;
+            
+            var index = Random.Range(0, FootstepAudioClips.Length);
+            PlayPooledClip(FootstepAudioClips[index], FootstepAudioVolume);
         }
 
         private void OnLand(AnimationEvent animationEvent)

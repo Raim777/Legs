@@ -8,17 +8,25 @@ namespace StarterAssets
 	public class StarterAssetsInputs : MonoBehaviour
 	{
 		[Header("Character Input Values")]
-		public Vector2 move;
-		public Vector2 look;
-		public bool jump;
-		public bool sprint;
+		[SerializeField] private Vector2 move;
+		[SerializeField] private Vector2 look;
+		[SerializeField] private bool jump;
+		[SerializeField] private bool sprint;
 
 		[Header("Movement Settings")]
-		public bool analogMovement;
+		[SerializeField] private bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
-		public bool cursorInputForLook = true;
+		[SerializeField] private bool cursorLocked = true;
+		[SerializeField] private bool cursorInputForLook = true;
+		
+
+		public Vector2 Move => move;
+		public Vector2 Look => look;
+		public bool Jump => jump;
+		public bool Sprint => sprint;
+		
+		public bool AnalogMovement => analogMovement;
 
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -85,6 +93,7 @@ namespace StarterAssets
 		}
 #endif
 
+
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
@@ -103,6 +112,11 @@ namespace StarterAssets
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+		}
+
+		public void ConsumeJump()
+		{
+			jump = false;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
