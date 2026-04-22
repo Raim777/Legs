@@ -19,21 +19,16 @@ public class MobileDisableAutoSwitchControls : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM && (UNITY_IOS || UNITY_ANDROID)
 
     [Header("Target")]
-    public PlayerInput playerInput;
+    [SerializeField] private PlayerInput playerInput;
 
-    void Start()
+    private void Start()
     {
         DisableAutoSwitchControls();
     }
 
-    void DisableAutoSwitchControls()
+    private void DisableAutoSwitchControls()
     {
         playerInput.neverAutoSwitchControlSchemes = true;
-    }
-
-    private void Update()
-    {
-        Debug.Log(playerInput.currentControlScheme);
     }
 
 #endif

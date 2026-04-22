@@ -5,43 +5,91 @@ using UnityEngine.InputSystem;
 
 namespace StarterAssets
 {
-	public class StarterAssetsInputs : MonoBehaviour
+	public class StarterAssetsInputs : CharacterInputProvider
 	{
 		[Header("Character Input Values")]
-		public Vector2 move;
-		public Vector2 look;
-		public bool jump;
-		public bool sprint;
+		[SerializeField] private Vector2 move;
+		[SerializeField] private Vector2 look;
+		[SerializeField] private bool jump;
+		[SerializeField] private bool sprint;
 
 		[Header("Movement Settings")]
-		public bool analogMovement;
+		[SerializeField] private bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
-		public bool cursorInputForLook = true;
+		[SerializeField] private bool cursorLocked = true;
+		[SerializeField] private bool cursorInputForLook = true;
+
+
+		public override Vector2 Move => move;
+		public override Vector2 Look => look;
+		public override bool Jump => jump;
+		public override bool Sprint => sprint;
+
+		public override bool AnalogMovement => analogMovement;
 
 #if ENABLE_INPUT_SYSTEM
-		public void OnMove(InputValue value)
+		private PlayerInput _playerInput;
+		private InputAction _moveAction;
+		private InputAction _lookAction;
+		private InputAction _jumpAction;
+		private InputAction _sprintAction;
+
+		private void Awake()
 		{
-			MoveInput(value.Get<Vector2>());
+			_playerInput = GetComponent<PlayerInput>();
+			var actions = _playerInput.actions;
+			_moveAction = actions["Move"];
+			_lookAction = actions["Look"];
+			_jumpAction = actions["Jump"];
+			_sprintAction = actions["Sprint"];
 		}
 
-		public void OnLook(InputValue value)
+		private void OnEnable()
 		{
-			if(cursorInputForLook)
+			_moveAction.performed += OnMove;
+			_moveAction.canceled += OnMove;
+			_lookAction.performed += OnLook;
+			_lookAction.canceled += OnLook;
+			_jumpAction.performed += OnJump;
+			_jumpAction.canceled += OnJump;
+			_sprintAction.performed += OnSprint;
+			_sprintAction.canceled += OnSprint;
+		}
+
+		private void OnDisable()
+		{
+			_moveAction.performed -= OnMove;
+			_moveAction.canceled -= OnMove;
+			_lookAction.performed -= OnLook;
+			_lookAction.canceled -= OnLook;
+			_jumpAction.performed -= OnJump;
+			_jumpAction.canceled -= OnJump;
+			_sprintAction.performed -= OnSprint;
+			_sprintAction.canceled -= OnSprint;
+		}
+
+		private void OnMove(InputAction.CallbackContext ctx)
+		{
+			move = ctx.ReadValue<Vector2>();
+		}
+
+		private void OnLook(InputAction.CallbackContext ctx)
+		{
+			if (cursorInputForLook)
 			{
-				LookInput(value.Get<Vector2>());
+				look = ctx.ReadValue<Vector2>();
 			}
 		}
 
-		public void OnJump(InputValue value)
+		private void OnJump(InputAction.CallbackContext ctx)
 		{
-			JumpInput(value.isPressed);
+			jump = ctx.ReadValueAsButton();
 		}
 
-		public void OnSprint(InputValue value)
+		private void OnSprint(InputAction.CallbackContext ctx)
 		{
-			SprintInput(value.isPressed);
+			sprint = ctx.ReadValueAsButton();
 		}
 #endif
 
@@ -49,7 +97,7 @@ namespace StarterAssets
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
-		} 
+		}
 
 		public void LookInput(Vector2 newLookDirection)
 		{
@@ -65,7 +113,12 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
-		
+
+		public override void ConsumeJump()
+		{
+			jump = false;
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
@@ -76,5 +129,5 @@ namespace StarterAssets
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
 	}
-	
+
 }
