@@ -112,6 +112,9 @@ namespace StarterAssets
         private Transform _mainCameraTransform;
         private Transform _cinemachineTargetTransform;
 
+        [SerializeField] private AudioSource[] _audioPool;
+        private int _audioPoolIndex;
+
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
@@ -366,6 +369,16 @@ namespace StarterAssets
                 GroundedRadius);
         }
 
+        private void PlayPooledClip(AudioClip clip, float volume)
+        {
+            if (clip == null) return;
+            AudioSource src = _audioPool[_audioPoolIndex];
+            _audioPoolIndex = (_audioPoolIndex + 1) % _audioPool.Length;
+            src.clip = clip;
+            src.volume = volume;
+            src.Play();
+        }
+
         private void OnFootstep(AnimationEvent animationEvent)
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
@@ -373,7 +386,7 @@ namespace StarterAssets
                 if (FootstepAudioClips.Length > 0)
                 {
                     var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], _transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    PlayPooledClip(FootstepAudioClips[index], FootstepAudioVolume);
                 }
             }
         }
@@ -382,7 +395,7 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, _transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                PlayPooledClip(LandingAudioClip, FootstepAudioVolume);
             }
         }
     }
