@@ -1122,6 +1122,14 @@ PrefabInstance:
       propertyPath: m_NotificationBehavior
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5309126890773669517, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: characterController
+      value: 
+      objectReference: {fileID: 1762682261}
+    - target: {fileID: 5309126890773669517, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: groundLayers.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5597113867290821413, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: m_Quality
       value: 1
@@ -1137,9 +1145,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1973249863}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1762682268}
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1762682269}
@@ -1166,47 +1171,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!143 &1762682261 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 4416926081852918491, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+  m_PrefabInstance: {fileID: 1762682258}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1762682262 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
   m_PrefabInstance: {fileID: 1762682258}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1762682268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420374167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 726325959c0cb064597e2f1bd5eb6b21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FischlWorks.csHomebrewIK
-  lengthFromHeelToToes: 0.1326
-  maxRotationAngle: 45
-  ankleHeightOffset: 0.0296
-  enableIKPositioning: 1
-  enableIKRotating: 1
-  globalWeight: 1
-  leftFootWeight: 1
-  rightFootWeight: 1
-  smoothTime: 0.075
-  raySphereRadius: 0.05
-  rayCastRange: 2
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  ignoreTriggers: 1
-  leftFootRayStartHeight: 0.4
-  rightFootRayStartHeight: 0.4
-  enableFootLifting: 1
-  floorRange: 0.4
-  enableBodyPositioning: 1
-  crouchRange: 0.25
-  stretchRange: 0
-  giveWorldHeightOffset: 0
-  worldHeightOffset: 0
 --- !u!114 &1762682269
 MonoBehaviour:
   m_ObjectHideFlags: 0
