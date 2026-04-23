@@ -15,6 +15,7 @@ namespace StarterAssets
 		[SerializeField] private Vector2 look;
 		[SerializeField] private bool jump;
 		[SerializeField] private bool sprint;
+		[SerializeField] private bool crouch;
 
 		[Header("Movement Settings")]
 		[SerializeField] private bool analogMovement;
@@ -28,6 +29,7 @@ namespace StarterAssets
 		public override Vector2 Look => look;
 		public override bool Jump => jump;
 		public override bool Sprint => sprint;
+		public override bool Crouch => crouch;
 
 		public override bool AnalogMovement => analogMovement;
 
@@ -37,6 +39,7 @@ namespace StarterAssets
 		private InputAction _lookAction;
 		private InputAction _jumpAction;
 		private InputAction _sprintAction;
+		private InputAction _crouchAction;
 
 		private void Awake()
 		{
@@ -46,6 +49,7 @@ namespace StarterAssets
 			_lookAction = actions["Look"];
 			_jumpAction = actions["Jump"];
 			_sprintAction = actions["Sprint"];
+			_crouchAction = actions["Crouch"];
 		}
 
 		private void OnEnable()
@@ -58,6 +62,7 @@ namespace StarterAssets
 			_jumpAction.canceled += OnJump;
 			_sprintAction.performed += OnSprint;
 			_sprintAction.canceled += OnSprint;
+			_crouchAction.performed += OnCrouch;
 		}
 
 		private void OnDisable()
@@ -70,6 +75,7 @@ namespace StarterAssets
 			_jumpAction.canceled -= OnJump;
 			_sprintAction.performed -= OnSprint;
 			_sprintAction.canceled -= OnSprint;
+			_crouchAction.performed -= OnCrouch;
 		}
 
 		private void OnMove(InputAction.CallbackContext ctx)
@@ -93,6 +99,14 @@ namespace StarterAssets
 		private void OnSprint(InputAction.CallbackContext ctx)
 		{
 			sprint = ctx.ReadValueAsButton();
+		}
+
+		private void OnCrouch(InputAction.CallbackContext ctx)
+		{
+			if (ctx.performed)
+			{
+				crouch = !crouch;
+			}
 		}
 #endif
 
