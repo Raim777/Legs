@@ -10,9 +10,6 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-    [RequireComponent(typeof(PlayerInput))]
-#endif
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Input")]
@@ -23,7 +20,7 @@ namespace StarterAssets
 
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        [SerializeField] private float MoveSpeed = 2.0f;
+        [SerializeField] public float MoveSpeed = 2.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
         [SerializeField] private float SprintSpeed = 5.335f;
@@ -141,9 +138,11 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
 #if ENABLE_INPUT_SYSTEM
-            _playerInput = GetComponent<PlayerInput>();
-            _isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
-            _playerInput.onControlsChanged += OnControlsChanged;
+            if (TryGetComponent(out _playerInput))
+            {
+                _isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
+                _playerInput.onControlsChanged += OnControlsChanged;
+            }
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -176,6 +175,11 @@ namespace StarterAssets
             _isCurrentDeviceMouse = pi.currentControlScheme == "KeyboardMouse";
         }
 #endif
+
+        public void SetInput(CharacterInputProvider input)
+        {
+            _input = input;
+        }
 
         private void Update()
         {

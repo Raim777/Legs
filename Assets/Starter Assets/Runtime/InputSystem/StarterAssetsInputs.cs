@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 namespace StarterAssets
 {
+#if ENABLE_INPUT_SYSTEM
+	[RequireComponent(typeof(PlayerInput))]
+#endif
 	public class StarterAssetsInputs : CharacterInputProvider
 	{
 		[Header("Character Input Values")]
