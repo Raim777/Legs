@@ -94,9 +94,6 @@ namespace FischlWorks
                 }
             }
         }
-        
-        [SerializeField]
-        private CharacterController characterController = null;
 
         [BigHeader("Foot Properties")]
 
@@ -171,17 +168,6 @@ namespace FischlWorks
         [ShowIf("giveWorldHeightOffset")]
         [SerializeField]
         private float worldHeightOffset = 0;
-        
-        [SerializeField]
-        private float velocityThreshold = 0.5f;
-        [SerializeField]
-        private float minimumWeightForVelocityThreshold = 0.1f;
-        [SerializeField] 
-        private float weightChangeVelocity = 0.0f;
-        [SerializeField] 
-        private float weightChangeSpeed = 0.2f;
-        [SerializeField] 
-        private float currentWeight = 0.0f;
 
         private RaycastHit leftFootRayHitInfo = new RaycastHit();
         private RaycastHit rightFootRayHitInfo = new RaycastHit();
@@ -587,20 +573,13 @@ namespace FischlWorks
 
         private void ApplyFootIK()
         {
-            const float gravityModMultiplier = 3.4f;
-            Vector3 velocity = characterController.velocity;
-            velocity.y *= gravityModMultiplier;
-            
-            float targetWeight = Mathf.Lerp(1.0f, minimumWeightForVelocityThreshold, velocity.magnitude / velocityThreshold);
-            currentWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref weightChangeVelocity, weightChangeSpeed);
-            
             /* Weight designation */
 
-            playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight * currentWeight);
-            playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight * currentWeight);
+            playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight);
+            playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight);
             
-            playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight * currentWeight);
-            playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight * currentWeight);
+            playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight);
+            playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight);
 
             /* Position handling */
 
