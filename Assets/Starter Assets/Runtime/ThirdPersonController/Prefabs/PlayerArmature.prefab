@@ -1037,6 +1037,7 @@ GameObject:
   - component: {fileID: 5885216827943657505}
   - component: {fileID: 135756642000475821}
   - component: {fileID: 4416926081852918493}
+  - component: {fileID: 5309126890773669517}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1120,6 +1121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _input: {fileID: 0}
+  mainCamera: {fileID: 0}
   MoveSpeed: 2
   SprintSpeed: 5.335
   RotationSmoothTime: 0.12
@@ -1152,6 +1155,7 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  audioPool: []
 --- !u!114 &5885216827943657505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1286,6 +1290,48 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5309126890773669517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 726325959c0cb064597e2f1bd5eb6b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FischlWorks.csHomebrewIK
+  characterController: {fileID: 4416926081852918491}
+  lengthFromHeelToToes: 0.1326
+  maxRotationAngle: 45
+  ankleHeightOffset: 0.0296
+  enableIKPositioning: 1
+  enableIKRotating: 1
+  globalWeight: 1
+  leftFootWeight: 1
+  rightFootWeight: 1
+  smoothTime: 0.075
+  raySphereRadius: 0.05
+  rayCastRange: 2
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  ignoreTriggers: 1
+  leftFootRayStartHeight: 0.4
+  rightFootRayStartHeight: 0.4
+  enableFootLifting: 1
+  floorRange: 0.4
+  enableBodyPositioning: 1
+  crouchRange: 0
+  stretchRange: 0
+  giveWorldHeightOffset: 0
+  worldHeightOffset: 0
+  velocityThreshold: 0.5
+  minimumWeightForVelocityThreshold: 0.1
+  weightChangeVelocity: 0
+  weightChangeSpeed: 0.2
+  currentWeight: 0
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
