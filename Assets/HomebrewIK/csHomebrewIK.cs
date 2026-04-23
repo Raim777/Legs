@@ -168,9 +168,15 @@ namespace FischlWorks
         [ShowIf("giveWorldHeightOffset")]
         [SerializeField]
         private float worldHeightOffset = 0;
-
         [SerializeField]
         private float weightChangeTime = 0.075f;
+        [SerializeField] 
+        private float runningThreshold = 2.0f;
+        [SerializeField] 
+        private float runningMinFloorRange = 0.1f;
+        
+        [SerializeField]
+        private CharacterController characterController = null;
         
         private float leftWeight = 0f, rightWeight = 0f;
         private float leftWeightVelocity = 0f, rightWeightVelocity = 0f;
@@ -530,11 +536,14 @@ namespace FischlWorks
 
         private void LerpIKBufferToTarget()
         {
+            // Make sure steps don't stick to the floor when player is walking
+            var floorRangeDyn = Mathf.Lerp(floorRange, runningMinFloorRange, (characterController.velocity + playerAnimator.velocity).magnitude / runningThreshold);
+            
             /* Instead of wrangling with weights, we switch the lerp targets to make movement smooth */
 
             if (enableFootLifting == true &&
                 playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y >=
-                leftFootIKPositionTarget.y + floorRange)
+                leftFootIKPositionTarget.y + floorRangeDyn)
             {
                 leftFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     leftFootIKPositionBuffer.y,
@@ -553,7 +562,7 @@ namespace FischlWorks
             
             if (enableFootLifting == true &&
                 playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y >=
-                rightFootIKPositionTarget.y + floorRange)
+                rightFootIKPositionTarget.y + floorRangeDyn)
             {
                 rightFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     rightFootIKPositionBuffer.y,
@@ -644,6 +653,12 @@ namespace FischlWorks
                     rightFootRayHitHeight);
             
             minFootHeight -= transform.localPosition.y;
+
+            if (leftFootRayHitInfo.collider == null
+                || rightFootRayHitInfo.collider == null)
+            {
+                minFootHeight = 0;
+            }
 
             if (minFootHeight < -floorRange)
             {

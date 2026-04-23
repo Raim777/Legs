@@ -1469,7 +1469,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 726325959c0cb064597e2f1bd5eb6b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FischlWorks.csHomebrewIK
-  characterController: {fileID: 4416926081852918491}
   lengthFromHeelToToes: 0.1326
   maxRotationAngle: 45
   ankleHeightOffset: 0.0296
@@ -1480,7 +1479,7 @@ MonoBehaviour:
   rightFootWeight: 1
   smoothTime: 0.075
   raySphereRadius: 0.05
-  rayCastRange: 2
+  rayCastRange: 0.8
   groundLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -1494,11 +1493,10 @@ MonoBehaviour:
   stretchRange: 0
   giveWorldHeightOffset: 0
   worldHeightOffset: 0
-  velocityThreshold: 0.5
-  minimumWeightForVelocityThreshold: 0.1
-  weightChangeVelocity: 0
-  weightChangeSpeed: 0.2
-  currentWeight: 0
+  weightChangeTime: 0.075
+  runningThreshold: 2
+  runningMinFloorRange: 0.1
+  characterController: {fileID: 4416926081852918491}
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
