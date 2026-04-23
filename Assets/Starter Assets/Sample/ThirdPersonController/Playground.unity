@@ -1077,7 +1077,7 @@ PrefabInstance:
     - target: {fileID: 4416926081852918490, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: _input
       value: 
-      objectReference: {fileID: 1762682259}
+      objectReference: {fileID: 1762682269}
     - target: {fileID: 4416926081852918490, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: mainCamera
       value: 
@@ -1140,6 +1140,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1762682268}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1762682269}
   m_SourcePrefab: {fileID: 100100000, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
 --- !u!114 &1762682259 stripped
 MonoBehaviour:
@@ -1204,6 +1207,38 @@ MonoBehaviour:
   stretchRange: 0
   giveWorldHeightOffset: 0
   worldHeightOffset: 0
+--- !u!114 &1762682269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420374167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5979f759f6357a44a629db13ece9011, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.StarterAssets::StarterAssets.ScriptedCharacterInput
+  playOnStart: 1
+  endMode: 0
+  analogMovement: 0
+  commands:
+  - move: {x: 0, y: 1}
+    sprint: 0
+    jump: 0
+    duration: 5
+  - move: {x: -1, y: 0}
+    sprint: 0
+    jump: 0
+    duration: 2
+  - move: {x: 1, y: 0}
+    sprint: 0
+    jump: 0
+    duration: 2
+  - move: {x: 0, y: -1}
+    sprint: 0
+    jump: 0
+    duration: 2
 --- !u!1 &1764214107
 GameObject:
   m_ObjectHideFlags: 0
