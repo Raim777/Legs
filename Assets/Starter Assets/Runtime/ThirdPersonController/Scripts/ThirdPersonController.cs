@@ -121,7 +121,6 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
-        private bool _isCurrentDeviceMouse;
 
         // cached animator params to avoid redundant native SetBool every frame
         private bool _animGrounded;
@@ -140,11 +139,7 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
 #if ENABLE_INPUT_SYSTEM
-            if (TryGetComponent(out _playerInput))
-            {
-                _isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
-                _playerInput.onControlsChanged += OnControlsChanged;
-            }
+            _playerInput = GetComponent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -163,21 +158,6 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
-
-#if ENABLE_INPUT_SYSTEM
-        private void OnDestroy()
-        {
-            if (_playerInput != null)
-            {
-                _playerInput.onControlsChanged -= OnControlsChanged;
-            }
-        }
-
-        private void OnControlsChanged(PlayerInput pi)
-        {
-            _isCurrentDeviceMouse = pi.currentControlScheme == "KeyboardMouse";
-        }
-#endif
 
         public void SetInput(CharacterInputProvider input)
         {
@@ -228,11 +208,8 @@ namespace StarterAssets
             if (_input.Look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = _isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-                //float deltaTimeMultiplier = Time.deltaTime;
-
-                _cinemachineTargetYaw += _input.Look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.Look.y * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _input.Look.x;
+                _cinemachineTargetPitch += _input.Look.y;
             }
 
             // clamp our rotations so our values are limited 360 degrees
