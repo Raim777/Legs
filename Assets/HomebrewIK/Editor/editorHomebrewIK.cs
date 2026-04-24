@@ -48,6 +48,16 @@ namespace FischlWorks
 
 
 
+        void OnDisable()
+        {
+            if (glMaterial != null)
+            {
+                DestroyImmediate(glMaterial);
+            }
+        }
+
+
+
         public override void OnInspectorGUI()
         {
             GUILayout.BeginVertical(EditorStyles.helpBox);
@@ -369,6 +379,8 @@ namespace FischlWorks
     // DecoratorDrawer must be inherited instead of PropertyDrawer in order not to affect any property field beneath
     public class BigHeaderAttributeDrawer : DecoratorDrawer
     {
+        private static GUIStyle headerTextStyle;
+
         public override void OnGUI(Rect position)
         {
             BigHeaderAttribute attributeHandle = (BigHeaderAttribute)attribute;
@@ -378,14 +390,17 @@ namespace FischlWorks
             // This line of code was fetched from the internal unity header attribute implementation
             position = EditorGUI.IndentedRect(position);
 
-            GUIStyle headerTextStyle = new GUIStyle()
+            if (headerTextStyle == null)
             {
-                fontSize = 16,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleLeft
-            };
+                headerTextStyle = new GUIStyle()
+                {
+                    fontSize = 16,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleLeft
+                };
 
-            headerTextStyle.normal.textColor = new Color32(255, 200, 55, 255);
+                headerTextStyle.normal.textColor = new Color32(255, 200, 55, 255);
+            }
 
             GUI.Label(position, attributeHandle._Text, headerTextStyle);
 
