@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
-public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerMoveHandler, IPointerUpHandler
+public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private RectTransform padTransform, stickTransform;
@@ -33,7 +34,7 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IPointerMoveH
         _pointerId = eventData.pointerId;
     }
 
-    public void OnPointerMove(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
     {
         if (!_pointerId.HasValue)
             return;

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class TouchscreenInput : MonoBehaviour
 {
@@ -66,7 +67,7 @@ public class TouchscreenInput : MonoBehaviour
 
             LookEvent.Invoke(mov * LookMagnitudeMultiplier);
         });
-
+        
         /*var jumpButton = _mDocument.rootVisualElement.Q<VisualElement>("ButtonJump");
         jumpButton.RegisterCallback<PointerEnterEvent>(evt => { JumpEvent.Invoke(true); });
         jumpButton.RegisterCallback<PointerLeaveEvent>(evt => { JumpEvent.Invoke(false); });
@@ -80,5 +81,10 @@ public class TouchscreenInput : MonoBehaviour
         _sprinting = value;
         
         SprintEvent.Invoke(_sprinting);
+    }
+
+    public void Jump(bool val)
+    {
+        JumpEvent.Invoke(val);
     }
 }
