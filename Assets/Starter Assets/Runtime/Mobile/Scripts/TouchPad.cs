@@ -12,7 +12,7 @@ public class TouchPad : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         _wasDragged = true;
         
-        OnInput?.Invoke(eventData.delta / Screen.dpi);
+        OnInput?.Invoke(eventData.delta);
     }
 
     public void OnEndDrag(PointerEventData eventData)

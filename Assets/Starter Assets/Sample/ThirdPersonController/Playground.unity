@@ -834,18 +834,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 4942255328845001493, guid: d30fe2c7162660d4ea7897b7fbf3f97a, type: 3}
-      propertyPath: lockDelay
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4942255328845001493, guid: d30fe2c7162660d4ea7897b7fbf3f97a, type: 3}
-      propertyPath: lockRange
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 4942255328845001493, guid: d30fe2c7162660d4ea7897b7fbf3f97a, type: 3}
-      propertyPath: lockRangeSqr
-      value: 1089
-      objectReference: {fileID: 0}
     - target: {fileID: 5029395520492285919, guid: d30fe2c7162660d4ea7897b7fbf3f97a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -934,6 +922,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9012152225113732780, guid: d30fe2c7162660d4ea7897b7fbf3f97a, type: 3}
+      propertyPath: thirdPersonFollow
+      value: 
+      objectReference: {fileID: 2143716155}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1572,10 +1564,7 @@ PrefabInstance:
     - {fileID: 7195455404386784034, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2070925441746177671, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2143716159}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
 --- !u!1 &1728365439
 GameObject:
@@ -2020,43 +2009,17 @@ Transform:
   - {fileID: 1132943488}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2143716154 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2070925441746177671, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
-  m_PrefabInstance: {fileID: 1402827283}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2143716155 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1966588825987907798, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
   m_PrefabInstance: {fileID: 1402827283}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2143716154}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
---- !u!114 &2143716159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2143716154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d85b7b19b8c9c454da8f055850c846f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.StarterAssets::StarterAssets.CameraPinchZoom
-  thirdPersonFollow: {fileID: 2143716155}
-  uiDocument: {fileID: 0}
-  whitelistElementNames: []
-  minDistance: 2
-  maxDistance: 6
-  pinchSensitivity: 0.01
-  pinchDeadzone: 2
-  scrollSensitivity: 0.5
-  smoothTime: 0.12
 --- !u!1 &2114283753834967212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2275,10 +2238,6 @@ PrefabInstance:
     - target: {fileID: 7137023482562969817, guid: 7d001cacf887eb14cbf269a09e3ec3ba, type: 3}
       propertyPath: m_Name
       value: UI_TouchScreenInput
-      objectReference: {fileID: 0}
-    - target: {fileID: 7137023482562969817, guid: 7d001cacf887eb14cbf269a09e3ec3ba, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7140694399045626294, guid: 7d001cacf887eb14cbf269a09e3ec3ba, type: 3}
       propertyPath: lookPad

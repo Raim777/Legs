@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -11,6 +10,7 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
     [SerializeField] private RectTransform padTransform, stickTransform;
     [SerializeField] private RectTransform lockTransform;
     [SerializeField] private Image padImage;
+    [SerializeField] private CanvasGroup lockPadCanvas;
     [SerializeField] private float stickRange = 60.0f;
     [SerializeField] private float lockRange = 24.0f;
     [SerializeField] private float lockDelay = 0.2f;
@@ -22,14 +22,14 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
     public event Action<Vector2> OnInput;
     
     private int? _pointerId;
-    private float _lockDistance;
     private LockState _lockState;
+    private const float MinLockPadAlpha = 0.33f;
 
     private void OnEnable()
     {
         padImage.enabled = false;
+        lockPadCanvas.alpha = 0.0f;
         stickTransform.gameObject.SetActive(false);
-        lockTransform.gameObject.SetActive(false);
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -43,8 +43,8 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         stickTransform.anchoredPosition = Vector2.zero;
         
         padImage.enabled = true;
+        lockPadCanvas.alpha = MinLockPadAlpha;
         stickTransform.gameObject.SetActive(true);
-        lockTransform.gameObject.SetActive(true);
         
         _pointerId = eventData.pointerId;
         
@@ -55,43 +55,63 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
     {
         if (!_pointerId.HasValue)
             return;
-        
+
         if (eventData.pointerId != _pointerId)
             return;
+                
+        CheckLockState((eventData.position - (Vector2)lockTransform.position).sqrMagnitude);
 
-        _lockDistance = (eventData.position - (Vector2)lockTransform.position).sqrMagnitude;
+        if (_lockState == LockState.Locked)
+            return;
         
+        DragInput(eventData.position - (Vector2)padTransform.position);
+    }
+
+    void CheckLockState(float lockDistance)
+    {
         switch (_lockState)
         {
             case LockState.Unlocked:
-                if (_lockDistance <= lockRangeSqr)
+                if (lockDistance <= lockRangeSqr)
                 {
+                    lockPadCanvas.alpha = 1.0f;
                     _lockState = LockState.Locking;
                     Invoke(nameof(Lock), lockDelay);
                 }
                 break;
             
+            case LockState.Locked:
             case LockState.Locking:
-                if (_lockDistance > lockRangeSqr)
+                if (lockDistance > lockRangeSqr)
                 {
+                    lockPadCanvas.alpha = MinLockPadAlpha;
                     _lockState = LockState.Unlocked;
                     CancelInvoke(nameof(Lock));
                 }
                 break;
-            
-            case LockState.Locked:
-                return;
         }
+
+    }
+    
+    void Lock()
+    {
+        _lockState = LockState.Locked;
         
-        // Don't let stick to go off it's range
-        Vector2 stickOffset = eventData.position - (Vector2)padTransform.position;
+        // Move forward constantly until new command is given
+        OnInput?.Invoke(new Vector2(0, 1));
+    }
+    
+    void DragInput(Vector2 stickOffset)
+    {
         float stickOffsetSqrMagn = stickOffset.sqrMagnitude;
 
+        // Don't let stick to go off it's range
         if (stickOffsetSqrMagn > stickRangeSqr)
         {
             stickOffset = stickOffset / Mathf.Sqrt(stickOffsetSqrMagn) * stickRange;
         }
 
+        // Show input direction when locking it
         if (_lockState == LockState.Locking)
         {
             stickTransform.localPosition = Vector3.up * stickRange;
@@ -103,20 +123,14 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         
         OnInput?.Invoke(stickOffset / stickRange);
     }
-
-    void Lock()
-    {
-        _lockState = LockState.Locked;
-        
-        // Move forward constantly until new command is given
-        OnInput?.Invoke(new Vector2(0, 1));
-    }
     
     public void OnPointerUp(PointerEventData eventData)
     {
-        padImage.enabled = false;
+        CancelInvoke(nameof(Lock));
+        
+        padImage.enabled  = false;
+        lockPadCanvas.alpha = _lockState == LockState.Locked ? 1.0f : 0.0f;
         stickTransform.gameObject.SetActive(false);
-        lockTransform.gameObject.SetActive(_lockState == LockState.Locked);
         
         _pointerId = null;
         eventData.Reset();

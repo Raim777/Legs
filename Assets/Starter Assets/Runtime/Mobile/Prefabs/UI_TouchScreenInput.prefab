@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveMagnitudeMultiplier: 1
-  LookMagnitudeMultiplier: 33
+  LookMagnitudeMultiplier: 0.33
   InvertLookY: 1
   moveJoystick: {fileID: 0}
   lookPad: {fileID: 0}
