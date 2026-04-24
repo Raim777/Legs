@@ -21,7 +21,6 @@ namespace StarterAssets
 
 		[Header("Mouse Cursor Settings")]
 		[SerializeField] private bool cursorLocked = true;
-		[SerializeField] private bool cursorInputForLook = true;
 
 
 		public override Vector2 Move => move;
@@ -42,9 +41,9 @@ namespace StarterAssets
 		{
 			_playerInput = GetComponent<PlayerInput>();
 			var actions = _playerInput.actions;
-			_moveAction = actions["Move"];
-			_lookAction = actions["Look"];
-			_jumpAction = actions["Jump"];
+			_moveAction   = actions["Move"];
+			_lookAction   = actions["Look"];
+			_jumpAction   = actions["Jump"];
 			_sprintAction = actions["Sprint"];
 		}
 
@@ -79,10 +78,15 @@ namespace StarterAssets
 
 		private void OnLook(InputAction.CallbackContext ctx)
 		{
-			if (cursorInputForLook)
+			/*InputBinding? binding = ctx.action.GetBindingForControl(ctx.control);
+			var isCursorControl = binding.HasValue && binding.Value.groups.Contains("KeyboardMouse");
+			
+			look = ctx.ReadValue<Vector2>();
+
+			if (!isCursorControl)
 			{
-				look = ctx.ReadValue<Vector2>();
-			}
+				look *= Time.deltaTime;
+			}*/
 		}
 
 		private void OnJump(InputAction.CallbackContext ctx)
