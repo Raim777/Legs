@@ -3,7 +3,9 @@
     "allow": [
       "Read(//c/Users/Admin/.claude/projects/D--OGames-UnityProjects-legs/**)",
       "Read(//c/Users/Admin/.claude/projects/D--OGames-UnityProjects-legs/memory/**)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(python -c \"import uuid; print\\(uuid.uuid4\\(\\).hex\\)\")",
+      "Bash(powershell -NoProfile -Command \"[guid]::NewGuid\\(\\).ToString\\('N'\\)\")"
     ]
   }
 }
