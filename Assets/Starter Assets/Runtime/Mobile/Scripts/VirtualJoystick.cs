@@ -2,22 +2,34 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    [SerializeField] private CanvasGroup canvasGroup;
+    enum LockState { Unlocked, Locking, Locked }
+    
     [SerializeField] private RectTransform padTransform, stickTransform;
+    [SerializeField] private RectTransform lockTransform;
+    [SerializeField] private Image padImage;
     [SerializeField] private float stickRange = 60.0f;
+    [SerializeField] private float lockRange = 24.0f;
+    [SerializeField] private float lockDelay = 0.2f;
+    
+    // optimization
     [SerializeField, HideInInspector] private float stickRangeSqr;
+    [SerializeField, HideInInspector] private float lockRangeSqr;
 
     public event Action<Vector2> OnInput;
     
     private int? _pointerId;
+    private float _lockDistance;
+    private LockState _lockState;
 
     private void OnEnable()
     {
-        canvasGroup.blocksRaycasts = false;
-        canvasGroup.alpha = 0;
+        padImage.enabled = false;
+        stickTransform.gameObject.SetActive(false);
+        lockTransform.gameObject.SetActive(false);
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -25,13 +37,18 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         if (_pointerId != null)
             return;
         
+        _lockState = LockState.Unlocked;
+        
         padTransform.position = eventData.position;
         stickTransform.anchoredPosition = Vector2.zero;
         
-        canvasGroup.blocksRaycasts = true;
-        canvasGroup.alpha = 1.0f;
+        padImage.enabled = true;
+        stickTransform.gameObject.SetActive(true);
+        lockTransform.gameObject.SetActive(true);
         
         _pointerId = eventData.pointerId;
+        
+        OnInput?.Invoke(Vector2.zero);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -41,6 +58,30 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         
         if (eventData.pointerId != _pointerId)
             return;
+
+        _lockDistance = (eventData.position - (Vector2)lockTransform.position).sqrMagnitude;
+        
+        switch (_lockState)
+        {
+            case LockState.Unlocked:
+                if (_lockDistance <= lockRangeSqr)
+                {
+                    _lockState = LockState.Locking;
+                    Invoke(nameof(Lock), lockDelay);
+                }
+                break;
+            
+            case LockState.Locking:
+                if (_lockDistance > lockRangeSqr)
+                {
+                    _lockState = LockState.Unlocked;
+                    CancelInvoke(nameof(Lock));
+                }
+                break;
+            
+            case LockState.Locked:
+                return;
+        }
         
         // Don't let stick to go off it's range
         Vector2 stickOffset = eventData.position - (Vector2)padTransform.position;
@@ -50,25 +91,43 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         {
             stickOffset = stickOffset / Mathf.Sqrt(stickOffsetSqrMagn) * stickRange;
         }
-        
-        stickTransform.position = (Vector3)stickOffset + padTransform.position;
+
+        if (_lockState == LockState.Locking)
+        {
+            stickTransform.localPosition = Vector3.up * stickRange;
+        }
+        else
+        {
+            stickTransform.localPosition = stickOffset;
+        }
         
         OnInput?.Invoke(stickOffset / stickRange);
+    }
+
+    void Lock()
+    {
+        _lockState = LockState.Locked;
+        
+        // Move forward constantly until new command is given
+        OnInput?.Invoke(new Vector2(0, 1));
     }
     
     public void OnPointerUp(PointerEventData eventData)
     {
-        canvasGroup.blocksRaycasts = false;
-        canvasGroup.alpha = 0.0f;
+        padImage.enabled = false;
+        stickTransform.gameObject.SetActive(false);
+        lockTransform.gameObject.SetActive(_lockState == LockState.Locked);
         
         _pointerId = null;
         eventData.Reset();
         
-        OnInput?.Invoke(Vector2.zero);
+        if (_lockState != LockState.Locked)
+            OnInput?.Invoke(Vector2.zero);
     }
 
     private void OnValidate()
     {
         stickRangeSqr = stickRange * stickRange;
+        lockRangeSqr  = lockRange * lockRange;
     }
 }

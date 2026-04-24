@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveMagnitudeMultiplier: 1
-  LookMagnitudeMultiplier: 1
+  LookMagnitudeMultiplier: 33
   InvertLookY: 1
   moveJoystick: {fileID: 0}
   lookPad: {fileID: 0}
@@ -139,3 +139,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901182334643ba1438a25accc6bd0c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInput: {fileID: 0}
