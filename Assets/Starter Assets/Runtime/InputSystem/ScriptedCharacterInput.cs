@@ -48,6 +48,7 @@ namespace StarterAssets
         private Vector2 _move;
         private bool _jump;
         private bool _sprint;
+        private bool _crouch;
         private int _index;
         private float _elapsed;
         private int _direction = 1;
@@ -56,6 +57,7 @@ namespace StarterAssets
         public override Vector2 Move => _move;
         public override Vector2 Look => Vector2.zero;
         public override bool Sprint => _sprint;
+        public override bool Crouch => _crouch;
         public override bool Jump => _jump;
         public override bool AnalogMovement => analogMovement;
 

@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/Admin/.claude/projects/D--OGames-UnityProjects-legs/**)",
-      "Read(//c/Users/Admin/.claude/projects/D--OGames-UnityProjects-legs/memory/**)"
+      "Read(//c/Users/Admin/.claude/projects/D--OGames-UnityProjects-legs/memory/**)",
+      "Bash(xargs grep *)"
     ]
   }
 }

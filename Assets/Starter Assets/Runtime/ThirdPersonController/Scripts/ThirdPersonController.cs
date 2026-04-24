@@ -102,6 +102,7 @@ namespace StarterAssets
         private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
+        private int _animIDCrouch;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
@@ -124,6 +125,7 @@ namespace StarterAssets
         // cached animator params to avoid redundant native SetBool every frame
         private bool _animGrounded;
         private bool _animJump;
+        private bool _animCrouch;
         private bool _animFreeFall;
 
         private void Start()
@@ -149,6 +151,7 @@ namespace StarterAssets
                 _animGrounded = _animator.GetBool(_animIDGrounded);
                 _animJump = _animator.GetBool(_animIDJump);
                 _animFreeFall = _animator.GetBool(_animIDFreeFall);
+                _animCrouch = _animator.GetBool(_animIDCrouch);
             }
 
             // reset our timeouts on start
@@ -166,6 +169,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            Crouch();
         }
 
         private void LateUpdate()
@@ -178,6 +182,7 @@ namespace StarterAssets
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
             _animIDJump = Animator.StringToHash("Jump");
+            _animIDCrouch = Animator.StringToHash("Crouch");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
@@ -348,6 +353,12 @@ namespace StarterAssets
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
+        }
+
+        private void Crouch()
+        {
+            if (!_hasAnimator) return;
+            SetAnimBool(_animIDCrouch, ref _animCrouch, _input.Crouch);
         }
 
         private void SetAnimBool(int id, ref bool current, bool value)
