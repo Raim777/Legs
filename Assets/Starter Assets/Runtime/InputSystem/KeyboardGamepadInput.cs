@@ -66,10 +66,17 @@ namespace StarterAssets
 
 		private void OnLook(InputAction.CallbackContext ctx)
 		{
-			if (cursorInputForLook)
+			InputBinding? binding = ctx.action.GetBindingForControl(ctx.control);
+			var isCursorControl = binding.HasValue && binding.Value.groups.Contains("KeyboardMouse");
+
+			var look = ctx.ReadValue<Vector2>();
+
+			if (!isCursorControl)
 			{
-				inputs.LookInput(ctx.ReadValue<Vector2>());
+				look *= Time.deltaTime;
 			}
+			
+			inputs.LookInput(look);
 		}
 
 		private void OnJump(InputAction.CallbackContext ctx)
