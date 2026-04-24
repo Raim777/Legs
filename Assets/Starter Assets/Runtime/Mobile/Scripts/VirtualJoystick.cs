@@ -8,11 +8,11 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private RectTransform padTransform, stickTransform;
     [SerializeField] private float stickRange = 60.0f;
+    [SerializeField, HideInInspector] private float stickRangeSqr;
 
     public event Action<Vector2> OnInput;
     
     private int? _pointerId;
-    private float _stickRangeSqr;
 
     private void OnEnable()
     {
@@ -46,7 +46,7 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
         Vector2 stickOffset = eventData.position - (Vector2)padTransform.position;
         float stickOffsetSqrMagn = stickOffset.sqrMagnitude;
 
-        if (stickOffsetSqrMagn > _stickRangeSqr)
+        if (stickOffsetSqrMagn > stickRangeSqr)
         {
             stickOffset = stickOffset / Mathf.Sqrt(stickOffsetSqrMagn) * stickRange;
         }
@@ -69,6 +69,6 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
 
     private void OnValidate()
     {
-        _stickRangeSqr = stickRange * stickRange;
+        stickRangeSqr = stickRange * stickRange;
     }
 }

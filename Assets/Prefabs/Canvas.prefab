@@ -272,7 +272,8 @@ MonoBehaviour:
   canvasGroup: {fileID: 4935232408643192696}
   padTransform: {fileID: 8652386502862383458}
   stickTransform: {fileID: 4432168048819879444}
-  stickRange: 100
+  stickRange: 98
+  stickRangeSqr: 9604
 --- !u!1 &5455820606931815435
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,10 +384,10 @@ RectTransform:
   - {fileID: 274082627300927466}
   m_Father: {fileID: 5687606122202835957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 584, y: -222}
-  m_SizeDelta: {x: 125.9902, y: 125.9902}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -151, y: 159.5}
+  m_SizeDelta: {x: 125.990234, y: 124.990234}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7351029747174808100
 CanvasRenderer:
