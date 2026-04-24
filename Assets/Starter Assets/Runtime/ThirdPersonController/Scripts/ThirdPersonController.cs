@@ -50,6 +50,9 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         [SerializeField] private float FallTimeout = 0.15f;
 
+        [Tooltip("If true, player can change direction and speed while airborne")]
+        [SerializeField] private bool AirControl = true;
+
         [Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         [SerializeField] private bool Grounded = true;
@@ -223,53 +226,67 @@ namespace StarterAssets
 
         private void Move()
         {
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.Sprint ? SprintSpeed : MoveSpeed;
+            bool inputEnabled = Grounded || AirControl;
 
-            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+            float targetSpeed;
+            float inputMagnitude;
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is no input, set the target speed to 0
-            if (_input.Move == Vector2.zero) targetSpeed = 0.0f;
-
-            // a reference to the players current horizontal velocity
-            Vector3 vel = _controller.velocity;
-            float currentHorizontalSpeed = Mathf.Sqrt(vel.x * vel.x + vel.z * vel.z);
-
-            float speedOffset = 0.1f;
-            float inputMagnitude = _input.AnalogMovement ? _input.Move.magnitude : 1f;
-
-            // accelerate or decelerate to target speed
-            if (currentHorizontalSpeed < targetSpeed - speedOffset ||
-                currentHorizontalSpeed > targetSpeed + speedOffset)
+            if (inputEnabled)
             {
-                // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                    Time.deltaTime * SpeedChangeRate);
+                // set target speed based on move speed, sprint speed and if sprint is pressed
+                targetSpeed = _input.Sprint ? SprintSpeed : MoveSpeed;
+
+                // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+
+                // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                // if there is no input, set the target speed to 0
+                if (_input.Move == Vector2.zero) targetSpeed = 0.0f;
+
+                // a reference to the players current horizontal velocity
+                Vector3 vel = _controller.velocity;
+                float currentHorizontalSpeed = Mathf.Sqrt(vel.x * vel.x + vel.z * vel.z);
+
+                float speedOffset = 0.1f;
+                inputMagnitude = _input.AnalogMovement ? _input.Move.magnitude : 1f;
+
+                // accelerate or decelerate to target speed
+                if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                    currentHorizontalSpeed > targetSpeed + speedOffset)
+                {
+                    // creates curved result rather than a linear one giving a more organic speed change
+                    // note T in Lerp is clamped, so we don't need to clamp our speed
+                    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                        Time.deltaTime * SpeedChangeRate);
+                }
+                else
+                {
+                    _speed = targetSpeed;
+                }
+
+                _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+                if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+                // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                // if there is a move input rotate player when the player is moving
+                if (_input.Move != Vector2.zero)
+                {
+                    // normalise input direction
+                    Vector3 inputDirection = new Vector3(_input.Move.x, 0.0f, _input.Move.y).normalized;
+
+                    _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                      _mainCameraTransform.eulerAngles.y;
+                    float rotation = Mathf.SmoothDampAngle(_transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                        RotationSmoothTime);
+
+                    // rotate to face input direction relative to camera position
+                    _transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                }
             }
             else
             {
-                _speed = targetSpeed;
-            }
-
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-            if (_animationBlend < 0.01f) _animationBlend = 0f;
-
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
-            if (_input.Move != Vector2.zero)
-            {
-                // normalise input direction
-                Vector3 inputDirection = new Vector3(_input.Move.x, 0.0f, _input.Move.y).normalized;
-
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  _mainCameraTransform.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(_transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                    RotationSmoothTime);
-
-                // rotate to face input direction relative to camera position
-                _transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                // airborne with AirControl disabled: preserve pre-jump speed/heading, ignore input
+                targetSpeed = _speed;
+                inputMagnitude = 1f;
             }
 
 
