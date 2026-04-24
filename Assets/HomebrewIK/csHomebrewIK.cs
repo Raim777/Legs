@@ -7,19 +7,14 @@
  * All Content (C) 2022 Unlimited Fischl Works, all rights reserved.
  */
 
-
-
-using System;       // Convert
+using System;       // AttributeUsage
 using UnityEngine;  // Monobehaviour
+#if UNITY_EDITOR
 using UnityEditor;  // Handles
-
-
+#endif
 
 namespace FischlWorks
 {
-
-
-
     public class csHomebrewIK : MonoBehaviour
     {
         private Animator playerAnimator = null;
@@ -311,12 +306,12 @@ namespace FischlWorks
 
             if (leftFootOrientationReference != null)
             {
-                Destroy(leftFootOrientationReference);
+                Destroy(leftFootOrientationReference.gameObject);
             }
 
             if (rightFootOrientationReference != null)
             {
-                Destroy(rightFootOrientationReference);
+                Destroy(rightFootOrientationReference.gameObject);
             }
 
             /* These gameobjects hold different orientation values from footTransform.rotation, but the delta remains the same */
@@ -377,13 +372,17 @@ namespace FischlWorks
 
             /* SphereCast is used here just because we need a normal vector to rotate our foot towards */
 
+            QueryTriggerInteraction triggerInteraction = ignoreTriggers
+                ? QueryTriggerInteraction.Ignore
+                : QueryTriggerInteraction.Collide;
+
             // Vector3.up is used here instead of transform.up to get normal vector in world orientation
             Physics.SphereCast(
                 leftFootRayStartPosition,
                 raySphereRadius,
                 Vector3.up * -1,
                 out leftFootRayHitInfo, rayCastRange, groundLayers,
-                (QueryTriggerInteraction)(2 - Convert.ToInt32(ignoreTriggers)));
+                triggerInteraction);
 
             // Vector3.up is used here instead of transform.up to get normal vector in world orientation
             Physics.SphereCast(
@@ -391,7 +390,7 @@ namespace FischlWorks
                 raySphereRadius,
                 Vector3.up * -1,
                 out rightFootRayHitInfo, rayCastRange, groundLayers,
-                (QueryTriggerInteraction)(2 - Convert.ToInt32(ignoreTriggers)));
+                triggerInteraction);
 
             // Left Foot Ray Handling
             if (leftFootRayHitInfo.collider != null)
@@ -505,12 +504,13 @@ namespace FischlWorks
         {
             if (leftFootRayHitInfo.collider != null)
             {
+                float leftAngle = Vector3.Angle(transform.up, leftFootRayHitInfo.normal);
+
                 leftFootIKRotationTarget = Vector3.Slerp(
                     transform.up,
                     leftFootRayHitInfo.normal,
-                    Mathf.Clamp(Vector3.Angle(transform.up, leftFootRayHitInfo.normal), 0, maxRotationAngle) /
                     // Addition of 1 is to prevent division by zero, not a perfect solution but somehow works
-                    (Vector3.Angle(transform.up, leftFootRayHitInfo.normal) + 1));
+                    Mathf.Clamp(leftAngle, 0, maxRotationAngle) / (leftAngle + 1));
             }
             else
             {
@@ -519,12 +519,13 @@ namespace FischlWorks
 
             if (rightFootRayHitInfo.collider != null)
             {
+                float rightAngle = Vector3.Angle(transform.up, rightFootRayHitInfo.normal);
+
                 rightFootIKRotationTarget = Vector3.Slerp(
                     transform.up,
                     rightFootRayHitInfo.normal,
-                    Mathf.Clamp(Vector3.Angle(transform.up, rightFootRayHitInfo.normal), 0, maxRotationAngle) /
                     // Addition of 1 is to prevent division by zero, not a perfect solution but somehow works
-                    (Vector3.Angle(transform.up, rightFootRayHitInfo.normal) + 1));
+                    Mathf.Clamp(rightAngle, 0, maxRotationAngle) / (rightAngle + 1));
             }
             else
             {
@@ -538,20 +539,23 @@ namespace FischlWorks
         {
             // Make sure steps don't stick to the floor when player is walking
             var floorRangeDyn = Mathf.Lerp(floorRange, runningMinFloorRange, (characterController.velocity + playerAnimator.velocity).magnitude / runningThreshold);
-            
+
+            float leftFootIKY = playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y;
+            float rightFootIKY = playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y;
+
             /* Instead of wrangling with weights, we switch the lerp targets to make movement smooth */
 
             if (enableFootLifting == true &&
-                playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y >=
+                leftFootIKY >=
                 leftFootIKPositionTarget.y + floorRangeDyn)
             {
                 leftFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     leftFootIKPositionBuffer.y,
-                    playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y,
+                    leftFootIKY,
                     ref leftFootHeightLerpVelocity,
                     smoothTime);
             }
-            else 
+            else
             {
                 leftFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     leftFootIKPositionBuffer.y,
@@ -559,18 +563,18 @@ namespace FischlWorks
                     ref leftFootHeightLerpVelocity,
                     smoothTime);
             }
-            
+
             if (enableFootLifting == true &&
-                playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y >=
+                rightFootIKY >=
                 rightFootIKPositionTarget.y + floorRangeDyn)
             {
                 rightFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     rightFootIKPositionBuffer.y,
-                    playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y,
+                    rightFootIKY,
                     ref rightFootHeightLerpVelocity,
                     smoothTime);
             }
-            else 
+            else
             {
                 rightFootIKPositionBuffer.y = Mathf.SmoothDamp(
                     rightFootIKPositionBuffer.y,
@@ -599,9 +603,9 @@ namespace FischlWorks
             /* Weight designation */
 
             playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight * leftWeight);
-            playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight * leftWeight);
+            playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight * rightWeight);
             
-            playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight * rightWeight);
+            playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight * leftWeight);
             playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight * rightWeight);
 
             /* Position handling */
@@ -687,18 +691,9 @@ namespace FischlWorks
         private void CopyByAxis(ref Vector3 target, Vector3 source, bool copyX, bool copyY, bool copyZ)
         {
             target = new Vector3(
-                Mathf.Lerp(
-                    target.x,
-                    source.x,
-                    Convert.ToInt32(copyX)),
-                Mathf.Lerp(
-                    target.y,
-                    source.y,
-                    Convert.ToInt32(copyY)),
-                Mathf.Lerp(
-                    target.z,
-                    source.z,
-                    Convert.ToInt32(copyZ)));
+                copyX ? source.x : target.x,
+                copyY ? source.y : target.y,
+                copyZ ? source.z : target.z);
         }
 
 
