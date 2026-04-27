@@ -133,15 +133,16 @@ namespace StarterAssets.Tests
             controller.height = 1.8f;
             controller.center = new Vector3(0f, 0.93f, 0f);
 
+            var motor = _characterGO.AddComponent<CharacterMotor>();
+            var cameraRig = _characterGO.AddComponent<CameraRig>();
             var tpc = _characterGO.AddComponent<ThirdPersonController>();
             var input = _characterGO.AddComponent<ScriptedCharacterInput>();
 
-            tpc.MoveSpeed = 2f;
+            tpc.moveSpeed = 2f;
 
-            SetPrivateField(tpc, "mainCamera", cam);
-            SetPrivateField(tpc, "CinemachineCameraTarget", cmTarget);
-            SetPrivateField(tpc, "GroundLayers", (LayerMask)~0);
-            SetPrivateField(tpc, "audioPool", new AudioSource[0]);
+            SetPrivateField(motor, "mainCamera", cam);
+            SetPrivateField(motor, "groundLayers", (LayerMask)~0);
+            SetPrivateField(cameraRig, "cinemachineCameraTarget", cmTarget);
 
             tpc.SetInput(input);
         }
