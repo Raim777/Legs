@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
     [RequireComponent(typeof(Animator))]
     public class CharacterAnimatorView : MonoBehaviour

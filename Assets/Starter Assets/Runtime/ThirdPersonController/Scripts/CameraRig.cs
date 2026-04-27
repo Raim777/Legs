@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
     public class CameraRig : MonoBehaviour
     {
         [Header("Input")]
-        [SerializeField] private CharacterInputProvider input;
+        [SerializeField] private InputProvider input;
 
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -35,7 +35,7 @@ namespace StarterAssets
             _cinemachineTargetYaw = _cinemachineTargetTransform.rotation.eulerAngles.y;
         }
 
-        public void SetInput(CharacterInputProvider value)
+        public void SetInput(InputProvider value)
         {
             input = value;
         }

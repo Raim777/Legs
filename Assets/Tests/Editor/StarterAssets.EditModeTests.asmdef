@@ -1,8 +1,8 @@
 {
-    "name": "StarterAssets.EditModeTests",
+    "name": "Character.EditModeTests",
     "rootNamespace": "",
     "references": [
-        "Unity.StarterAssets",
+        "Character",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

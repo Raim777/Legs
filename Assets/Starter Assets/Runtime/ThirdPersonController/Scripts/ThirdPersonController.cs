@@ -1,34 +1,29 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Character
 {
     [RequireComponent(typeof(CharacterMotor), typeof(CameraRig))]
     public class ThirdPersonController : MonoBehaviour
     {
-        private CharacterMotor _motor;
-        private CameraRig _cameraRig;
+        [SerializeField] private CharacterMotor motor;
+        [SerializeField] private CameraRig cameraRig;
 
         public float moveSpeed
         {
-            get => _motor.moveSpeed;
-            set => _motor.moveSpeed = value;
-        }
-
-        private void Awake()
-        {
-            _motor = GetComponent<CharacterMotor>();
-            _cameraRig = GetComponent<CameraRig>();
+            get => motor.moveSpeed;
+            set => motor.moveSpeed = value;
         }
 
         public void SetInput(InputProvider input)
         {
-            _motor.SetInput(input);
-            _cameraRig.SetInput(input);
+            motor.SetInput(input);
+            cameraRig.SetInput(input);
         }
 
         public void SetAirControl(bool value)
         {
-            _motor.SetAirControl(value);
+            motor.SetAirControl(value);
         }
     }
 }

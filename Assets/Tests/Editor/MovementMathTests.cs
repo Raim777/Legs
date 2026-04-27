@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace StarterAssets.Tests
+namespace Character.Tests
 {
     public class MovementMathTests
     {

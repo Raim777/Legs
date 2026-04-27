@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
     [RequireComponent(typeof(CharacterController))]
     public class CharacterMotor : MonoBehaviour
     {
         [Header("Input")]
-        [SerializeField] private CharacterInputProvider input;
+        [SerializeField] private InputProvider input;
 
         [Header("Camera")]
         [Tooltip("Reference to the main camera — used for camera-relative movement direction")]
@@ -96,7 +96,7 @@ namespace StarterAssets
             _fallTimeoutDelta = fallTimeout;
         }
 
-        public void SetInput(CharacterInputProvider value)
+        public void SetInput(InputProvider value)
         {
             input = value;
         }
