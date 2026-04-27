@@ -5,14 +5,7 @@ namespace Character
     [RequireComponent(typeof(Animator))]
     public class CharacterAnimatorView : MonoBehaviour
     {
-        [Header("Motor")]
         [SerializeField] private CharacterMotor motor;
-
-        [Header("Footstep Audio")]
-        [SerializeField] private AudioClip landingAudioClip;
-        [SerializeField] private AudioClip[] footstepAudioClips;
-        [Range(0, 1)] [SerializeField] private float footstepAudioVolume = 0.5f;
-        [SerializeField] private AudioSource[] audioPool;
 
         private Animator _animator;
 
@@ -21,8 +14,6 @@ namespace Character
         private bool _animJump;
         private bool _animFreeFall;
         private bool _animCrouch;
-
-        private int _audioPoolIndex;
 
         private static readonly int AnimIdSpeed = Animator.StringToHash("Speed");
         private static readonly int AnimIDGrounded = Animator.StringToHash("Grounded");
@@ -97,33 +88,6 @@ namespace Character
             if (current == value) return;
             current = value;
             _animator.SetBool(id, value);
-        }
-
-        private void PlayPooledClip(AudioClip clip, float volume)
-        {
-            if (clip == null) return;
-            AudioSource src = audioPool[_audioPoolIndex];
-            _audioPoolIndex = (_audioPoolIndex + 1) % audioPool.Length;
-            src.clip = clip;
-            src.volume = volume;
-            src.Play();
-        }
-
-        private void OnFootstep(AnimationEvent animationEvent)
-        {
-            if (!(animationEvent.animatorClipInfo.weight > 0.5f)) return;
-            if (footstepAudioClips.Length <= 0) return;
-
-            int index = Random.Range(0, footstepAudioClips.Length);
-            PlayPooledClip(footstepAudioClips[index], footstepAudioVolume);
-        }
-
-        private void OnLand(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                PlayPooledClip(landingAudioClip, footstepAudioVolume);
-            }
         }
     }
 }

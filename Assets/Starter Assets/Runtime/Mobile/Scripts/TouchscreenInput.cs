@@ -31,9 +31,14 @@ namespace Character
 
         private void OnDestroy()
         {
-            moveJoystick.OnInput -= Moved;
-            lookPad.OnInput -= Looked;
-            jumpButton.onClick.RemoveListener(Jump);
+            if (moveJoystick)
+                moveJoystick.OnInput -= Moved;
+            
+            if (lookPad)
+                lookPad.OnInput -= Looked;
+            
+            if (jumpButton)
+                jumpButton.onClick.RemoveListener(Jump);
         }
 
         private void Moved(Vector2 newDirection)

@@ -2099,6 +2099,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerArmature
       objectReference: {fileID: 0}
+    - target: {fileID: 5570223163918858591, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: topClamp
+      value: 89
+      objectReference: {fileID: 0}
     - target: {fileID: 5912416591352798387, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: mainCamera
       value: 
