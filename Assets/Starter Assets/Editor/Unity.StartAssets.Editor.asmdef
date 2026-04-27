@@ -1,9 +1,9 @@
 {
-    "name": "Unity.StarterAssets.Editor",
+    "name": "Character.Editor",
     "rootNamespace": "",
     "references": [
-        "Unity.StarterAssets",
-        "Unity.Cinemachine"
+        "Unity.Cinemachine",
+        "Character"
     ],
     "includePlatforms": [
         "Editor"

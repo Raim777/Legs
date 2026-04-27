@@ -2,7 +2,7 @@ using StarterAssets;
 using UnityEditor;
 using UnityEngine;
 
-namespace StarterAssetsEditor
+namespace Character.Editor
 {
     public class ScriptedInputWindow : EditorWindow
     {

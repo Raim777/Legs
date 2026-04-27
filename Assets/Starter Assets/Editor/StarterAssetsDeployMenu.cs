@@ -5,7 +5,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Unity.Cinemachine;
 
-namespace StarterAssets
+namespace Character.Editor
 {
     // This class needs to be a scriptable object to support dynamic determination of StarterAssets install path
     public partial class StarterAssetsDeployMenu : ScriptableObject

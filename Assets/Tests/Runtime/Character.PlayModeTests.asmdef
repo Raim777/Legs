@@ -1,10 +1,10 @@
 {
-    "name": "StarterAssets.PlayModeTests",
+    "name": "Character.PlayModeTests",
     "rootNamespace": "",
     "references": [
-        "Unity.StarterAssets",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Character"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

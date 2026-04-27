@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
     [RequireComponent(typeof(CharacterMotor), typeof(CameraRig))]
     public class ThirdPersonController : MonoBehaviour
@@ -20,7 +20,7 @@ namespace StarterAssets
             _cameraRig = GetComponent<CameraRig>();
         }
 
-        public void SetInput(CharacterInputProvider input)
+        public void SetInput(InputProvider input)
         {
             _motor.SetInput(input);
             _cameraRig.SetInput(input);
