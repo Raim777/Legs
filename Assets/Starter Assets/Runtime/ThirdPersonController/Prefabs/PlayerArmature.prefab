@@ -1333,7 +1333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Character::Character.CameraRig
   input: {fileID: 135756642000475821}
   cinemachineCameraTarget: {fileID: 8338988566280778634}
-  topClamp: 70
+  topClamp: 89
   bottomClamp: -30
   cameraAngleOverride: 0
   lockCameraPosition: 0
