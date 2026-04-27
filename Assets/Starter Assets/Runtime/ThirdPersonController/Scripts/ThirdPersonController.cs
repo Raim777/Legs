@@ -9,12 +9,6 @@ namespace Character
         [SerializeField] private CharacterMotor motor;
         [SerializeField] private CameraRig cameraRig;
 
-        public float moveSpeed
-        {
-            get => motor.moveSpeed;
-            set => motor.moveSpeed = value;
-        }
-
         public void SetInput(InputProvider input)
         {
             motor.SetInput(input);

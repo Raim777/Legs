@@ -137,7 +137,7 @@ namespace Character.Tests
             var tpc = _characterGO.AddComponent<ThirdPersonController>();
             var input = _characterGO.AddComponent<ScriptedCharacterInput>();
 
-            tpc.moveSpeed = 2f;
+            motor.moveSpeed = 2f;
 
             SetPrivateField(motor, "mainCamera", cam);
             SetPrivateField(motor, "groundLayers", (LayerMask)~0);
