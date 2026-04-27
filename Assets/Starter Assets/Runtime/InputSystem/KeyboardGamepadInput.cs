@@ -4,13 +4,13 @@ using UnityEngine.Serialization;
 using UnityEngine.InputSystem;
 #endif
 
-namespace StarterAssets
+namespace Character
 {
 #if ENABLE_INPUT_SYSTEM
 	public class KeyboardGamepadInput : MonoBehaviour
 	{
 		[Header("Output")]
-		[SerializeField] private StarterAssetsInputs inputs;
+		[SerializeField] private PlayerInputProvider inputs;
 		[SerializeField] private PlayerInput playerInput;
 		
 		[Header("Mouse Cursor Settings")]

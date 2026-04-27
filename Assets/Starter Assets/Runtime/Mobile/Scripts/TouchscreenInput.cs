@@ -1,87 +1,89 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using StarterAssets;
+using Character;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
+using UnityEngine.UI;
 
-public class TouchscreenInput : MonoBehaviour
+namespace Character
 {
-    [Header("Settings")] 
-    [Tooltip("Move joystick magnitude is in [-1;1] range, this multiply it before sending it to move event")]
-    [SerializeField] private float MoveMagnitudeMultiplier = 1.0f;
-    [Tooltip("Look joystick magnitude is in [-1;1] range, this multiply it before sending it to move event")]
-    [SerializeField] private float LookMagnitudeMultiplier = 1.0f;
-    [SerializeField] private bool InvertLookY;
-    [SerializeField] private VirtualJoystick moveJoystick;
-    [SerializeField] private TouchPad lookPad;
-    
-    [Header("Events")]
-    [SerializeField] private UnityEvent<Vector2> MoveEvent;
-    [SerializeField] private UnityEvent<Vector2> LookEvent;
-    [SerializeField] private UnityEvent<bool> JumpEvent;
-    [SerializeField] private UnityEvent<bool> SprintEvent;
-
-    [Header("Movement")] 
-    [SerializeField] private float threshold = 0.06f;
-    [SerializeField] private float sprintThreshold = 0.6f;
-    [SerializeField] private float sprintAmplification = 0.5f;
-    
-    private bool _sprinting = false;
-
-    private void Start()
+    public class TouchscreenInput : MonoBehaviour
     {
-        moveJoystick.OnInput += (mov =>
+        [Header("Settings")] 
+        [SerializeField, Range(-1, 1)] private float moveMagnitudeMultiplier = 1.0f;
+        [SerializeField, Range(-1, 1)] private float lookMagnitudeMultiplier = 1.0f;
+        [SerializeField] private bool invertLookY;
+        [SerializeField] private VirtualJoystick moveJoystick;
+        [SerializeField] private TouchPad lookPad;
+        [SerializeField] private Button jumpButton;
+        [SerializeField] private PlayerInputProvider inputProvider;
+
+        [Header("Movement")] 
+        [SerializeField] private float threshold = 0.06f;
+        [SerializeField] private float sprintThreshold = 0.6f;
+        [SerializeField] private float sprintAmplification = 0.5f;
+        
+        private bool _sprinting = false;
+
+        private void Start()
         {
-            float moveMagnitude = mov.magnitude;
+            moveJoystick.OnInput += Moved;
+            lookPad.OnInput += Looked;
+            jumpButton.onClick.AddListener(Jump);
+        }
+
+        private void OnDestroy()
+        {
+            moveJoystick.OnInput -= Moved;
+            lookPad.OnInput -= Looked;
+            jumpButton.onClick.RemoveListener(Jump);
+        }
+
+        private void Moved(Vector2 newDirection)
+        {
+            float moveMagnitude = newDirection.magnitude;
 
             if (moveMagnitude < threshold)
             {
-                MoveEvent?.Invoke(Vector2.zero);
+                inputProvider.MoveInput(Vector2.zero);
                 return;
             }
-            
+                
             SetSprinting(moveMagnitude > sprintThreshold);
-            
+                
             // Normalize and modify input when sprinting
-            mov /= moveMagnitude;
-            
+            newDirection /= moveMagnitude;
+                
             if (_sprinting)
             {
-                mov *= Mathf.Lerp(sprintAmplification, 1.0f, (moveMagnitude - sprintThreshold) / (1.0f - sprintThreshold));
+                newDirection *= Mathf.Lerp(sprintAmplification, 1.0f, (moveMagnitude - sprintThreshold) / (1.0f - sprintThreshold));
             }
             else
             {
-                mov *= moveMagnitude / sprintThreshold;
+                newDirection *= moveMagnitude / sprintThreshold;
             }
-            
-            MoveEvent.Invoke(mov * MoveMagnitudeMultiplier);
-        });;
-        
-        lookPad.OnInput += (mov =>
+                
+            inputProvider.MoveInput(newDirection * moveMagnitudeMultiplier);
+        }
+
+        private void Looked(Vector2 deltaLook)
         {
-            if (InvertLookY)
-                mov.y *= -1;
+            if (invertLookY)
+                deltaLook.y *= -1;
 
-            LookEvent.Invoke(mov * LookMagnitudeMultiplier);
-        });
-    }
-
-    private void SetSprinting(bool value)
-    {
-        if (_sprinting == value)
-            return;
+            inputProvider.LookInput(deltaLook * lookMagnitudeMultiplier);
+        }
         
-        _sprinting = value;
-        
-        SprintEvent.Invoke(_sprinting);
-    }
+        private void SetSprinting(bool value)
+        {
+            if (_sprinting == value)
+                return;
+            
+            _sprinting = value;
+            
+            inputProvider.SprintInput(_sprinting);
+        }
 
-    public void Jump(bool val)
-    {
-        JumpEvent.Invoke(val);
+        private void Jump()
+        {
+            inputProvider.JumpInput(true);
+        }
     }
 }

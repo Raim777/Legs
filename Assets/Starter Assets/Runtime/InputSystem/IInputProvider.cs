@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
-    public interface ICharacterInput
+    public interface IInputProvider
     {
         Vector2 Move { get; }
         Vector2 Look { get; }

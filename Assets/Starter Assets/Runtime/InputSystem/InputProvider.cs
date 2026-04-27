@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
-    public abstract class CharacterInputProvider : MonoBehaviour, ICharacterInput
+    public abstract class InputProvider : MonoBehaviour, IInputProvider
     {
         public abstract Vector2 Move { get; }
         public abstract Vector2 Look { get; }

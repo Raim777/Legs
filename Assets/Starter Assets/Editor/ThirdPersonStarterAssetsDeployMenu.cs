@@ -4,7 +4,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character.Editor
 {
     public partial class StarterAssetsDeployMenu : ScriptableObject
     {
@@ -26,7 +26,7 @@ namespace StarterAssets
             // player
             if (player == null)
             {
-                if (TryLocatePrefab(PlayerArmaturePrefabName, null, new[] { typeof(ThirdPersonController), typeof(StarterAssetsInputs) }, out GameObject prefab, out string _))
+                if (TryLocatePrefab(PlayerArmaturePrefabName, null, new[] { typeof(ThirdPersonController), typeof(PlayerInputProvider) }, out GameObject prefab, out string _))
                 {
                     HandleInstantiatingPrefab(prefab, out playerGameObject);
                 }
@@ -59,7 +59,7 @@ namespace StarterAssets
             // player
             if (player == null)
             {
-                if (TryLocatePrefab(PlayerCapsulePrefabName, null, new[] { typeof(ThirdPersonController), typeof(StarterAssetsInputs) }, out GameObject prefab, out string _))
+                if (TryLocatePrefab(PlayerCapsulePrefabName, null, new[] { typeof(ThirdPersonController), typeof(PlayerInputProvider) }, out GameObject prefab, out string _))
                 {
                     HandleInstantiatingPrefab(prefab, out playerGameObject);
                 }
@@ -82,7 +82,7 @@ namespace StarterAssets
 
         static string GetThirdPersonPrefabPath()
         {
-            if (TryLocatePrefab(PlayerArmaturePrefabName, null, new[] { typeof(ThirdPersonController), typeof(StarterAssetsInputs) }, out GameObject _, out string prefabPath))
+            if (TryLocatePrefab(PlayerArmaturePrefabName, null, new[] { typeof(ThirdPersonController), typeof(PlayerInputProvider) }, out GameObject _, out string prefabPath))
             {
                 var pathString = new StringBuilder();
                 var currentDirectory = new FileInfo(prefabPath).Directory;

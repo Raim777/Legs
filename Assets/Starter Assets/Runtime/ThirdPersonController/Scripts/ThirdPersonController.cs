@@ -7,13 +7,13 @@ using UnityEngine.InputSystem;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
-namespace StarterAssets
+namespace Character
 {
     [RequireComponent(typeof(CharacterController))]
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Input")]
-        [SerializeField] private CharacterInputProvider _input;
+        [SerializeField] private InputProvider _input;
 
         [Header("Camera")]
         [SerializeField] private Camera mainCamera;
@@ -162,7 +162,7 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
-        public void SetInput(CharacterInputProvider input)
+        public void SetInput(InputProvider input)
         {
             _input = input;
         }

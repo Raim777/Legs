@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarterAssets
+namespace Character
 {
     public enum ScriptedInputEndMode
     {
@@ -38,7 +38,7 @@ namespace StarterAssets
             new InputCommand { move = Vector2.zero, duration = duration, jump = true };
     }
 
-    public class ScriptedCharacterInput : CharacterInputProvider
+    public class ScriptedCharacterInput : InputProvider
     {
         [SerializeField] private bool playOnStart = true;
         [SerializeField] private ScriptedInputEndMode endMode = ScriptedInputEndMode.Stop;

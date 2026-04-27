@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Reflection;
 using NUnit.Framework;
-using StarterAssets;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace StarterAssets.Tests
+namespace Character.Tests
 {
     public class ThirdPersonControllerPlayModeTests
     {
