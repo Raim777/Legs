@@ -15,12 +15,6 @@ namespace Character
         [SerializeField] private AudioSource[] audioPool;
 
         private Animator _animator;
-        private int _animIDSpeed;
-        private int _animIDGrounded;
-        private int _animIDJump;
-        private int _animIDCrouch;
-        private int _animIDFreeFall;
-        private int _animIDMotionSpeed;
 
         // cached animator params to avoid redundant native SetBool every frame
         private bool _animGrounded;
@@ -30,15 +24,21 @@ namespace Character
 
         private int _audioPoolIndex;
 
+        private static readonly int AnimIdSpeed = Animator.StringToHash("Speed");
+        private static readonly int AnimIDGrounded = Animator.StringToHash("Grounded");
+        private static readonly int AnimIDJump = Animator.StringToHash("Jump");
+        private static readonly int AnimIDCrouch = Animator.StringToHash("Crouch");
+        private static readonly int AnimIDFreeFall = Animator.StringToHash("FreeFall");
+        private static readonly int AnimIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            AssignAnimationIDs();
 
-            _animGrounded = _animator.GetBool(_animIDGrounded);
-            _animJump = _animator.GetBool(_animIDJump);
-            _animFreeFall = _animator.GetBool(_animIDFreeFall);
-            _animCrouch = _animator.GetBool(_animIDCrouch);
+            _animGrounded = _animator.GetBool(AnimIDGrounded);
+            _animJump = _animator.GetBool(AnimIDJump);
+            _animFreeFall = _animator.GetBool(AnimIDFreeFall);
+            _animCrouch = _animator.GetBool(AnimIDCrouch);
         }
 
         private void Start()
@@ -63,43 +63,33 @@ namespace Character
 
         private void LateUpdate()
         {
-            _animator.SetFloat(_animIDSpeed, motor.AnimationBlend);
-            _animator.SetFloat(_animIDMotionSpeed, motor.InputMagnitude);
-        }
-
-        private void AssignAnimationIDs()
-        {
-            _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDCrouch = Animator.StringToHash("Crouch");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
-            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animator.SetFloat(AnimIdSpeed, motor.AnimationBlend);
+            _animator.SetFloat(AnimIDMotionSpeed, motor.InputMagnitude);
         }
 
         private void OnGroundedChanged(bool isGrounded)
         {
-            SetAnimBool(_animIDGrounded, ref _animGrounded, isGrounded);
+            SetAnimBool(AnimIDGrounded, ref _animGrounded, isGrounded);
             if (isGrounded)
             {
-                SetAnimBool(_animIDJump, ref _animJump, false);
-                SetAnimBool(_animIDFreeFall, ref _animFreeFall, false);
+                SetAnimBool(AnimIDJump, ref _animJump, false);
+                SetAnimBool(AnimIDFreeFall, ref _animFreeFall, false);
             }
         }
 
         private void OnJumped()
         {
-            SetAnimBool(_animIDJump, ref _animJump, true);
+            SetAnimBool(AnimIDJump, ref _animJump, true);
         }
 
         private void OnFreeFallStarted()
         {
-            SetAnimBool(_animIDFreeFall, ref _animFreeFall, true);
+            SetAnimBool(AnimIDFreeFall, ref _animFreeFall, true);
         }
 
         private void OnCrouchChanged(bool isCrouching)
         {
-            SetAnimBool(_animIDCrouch, ref _animCrouch, isCrouching);
+            SetAnimBool(AnimIDCrouch, ref _animCrouch, isCrouching);
         }
 
         private void SetAnimBool(int id, ref bool current, bool value)
