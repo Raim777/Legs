@@ -431,5 +431,10 @@ namespace StarterAssets
                 PlayPooledClip(LandingAudioClip, FootstepAudioVolume);
             }
         }
+
+        public void SetAirControl(bool value)
+        {
+            AirControl = value;
+        }
     }
 }
