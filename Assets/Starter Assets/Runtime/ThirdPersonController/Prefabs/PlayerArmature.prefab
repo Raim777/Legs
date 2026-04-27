@@ -1302,23 +1302,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44e6252f2e3cd2a4fa51849d4d1697d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Character::Character.CharacterMotor
+  data: {fileID: 11400000, guid: ca9e1706c8e17e849ab23b923eb100e4, type: 2}
   input: {fileID: 135756642000475821}
   mainCamera: {fileID: 0}
-  moveSpeed: 2
-  sprintSpeed: 5.335
-  rotationSmoothTime: 0.12
-  speedChangeRate: 10
-  jumpHeight: 1.2
-  gravity: -15
-  jumpTimeout: 0.5
-  fallTimeout: 0.15
-  airControl: 1
-  grounded: 1
-  groundedOffset: -0.14
-  groundedRadius: 0.28
   groundLayers:
     serializedVersion: 2
     m_Bits: 1
+  groundedOffset: -0.14
+  groundedRadius: 0.28
 --- !u!114 &5570223163918858591
 MonoBehaviour:
   m_ObjectHideFlags: 0
