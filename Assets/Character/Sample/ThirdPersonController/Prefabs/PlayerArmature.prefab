@@ -1303,7 +1303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Character::Character.CharacterMotor
   data: {fileID: 11400000, guid: 1d48f32a80037eb44b95301a4a7301bf, type: 2}
-  input: {fileID: 0}
+  input: {fileID: 135756642000475821}
   mainCamera: {fileID: 0}
   groundLayers:
     serializedVersion: 2
