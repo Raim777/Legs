@@ -1302,8 +1302,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44e6252f2e3cd2a4fa51849d4d1697d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Character::Character.CharacterMotor
-  data: {fileID: 11400000, guid: ca9e1706c8e17e849ab23b923eb100e4, type: 2}
-  input: {fileID: 135756642000475821}
+  data: {fileID: 11400000, guid: 1d48f32a80037eb44b95301a4a7301bf, type: 2}
+  input: {fileID: 0}
   mainCamera: {fileID: 0}
   groundLayers:
     serializedVersion: 2
