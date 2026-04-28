@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,8 +12,6 @@ namespace StarterAssets
     {
         [Header("Target")]
         [SerializeField] private CinemachineThirdPersonFollow thirdPersonFollow;
-
-        [Tooltip("Names of VisualElements (resolved via Q<VisualElement>) through which pinch is allowed.")]
         [SerializeField] private string[] whitelistElementNames;
 
         [Header("Zoom Range")]
@@ -22,16 +19,9 @@ namespace StarterAssets
         [SerializeField] private float maxDistance = 8f;
 
         [Header("Input Sensitivity")]
-        [Tooltip("World-units of zoom per pixel of pinch-distance change.")]
         [SerializeField] private float pinchSensitivity = 0.01f;
-
-        [Tooltip("Pinch deltas below this threshold (pixels per frame) are ignored.")]
         [SerializeField] private float pinchDeadzone = 2f;
-
-        [Tooltip("World-units of zoom per mouse scroll unit. Desktop fallback only.")]
         [SerializeField] private float scrollSensitivity = 0.5f;
-
-        [Header("Smoothing")]
         [SerializeField] private float smoothTime = 0.12f;
 
         private Rect[] _cachedRects;
